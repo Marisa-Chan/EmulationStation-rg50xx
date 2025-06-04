@@ -107,6 +107,12 @@ private:
 	unsigned int mTimeSinceLastInput;
 
 	bool mRenderedHelpPrompts;
+	
+	int mCapacity = 0;
+	int mCharge = 0;
+	std::unique_ptr<TextCache> mCapacityText;
+	
+	int mCapacityTimeElapsed = 0;
 };
 
 #endif // ES_CORE_WINDOW_H

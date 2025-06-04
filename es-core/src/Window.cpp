@@ -8,6 +8,8 @@
 #include "Scripting.h"
 #include <algorithm>
 #include <iomanip>
+#include <fcntl.h>
+#include <unistd.h>
 
 #ifdef WIN32
 #include <SDL_events.h>
@@ -157,6 +159,8 @@ void Window::input(InputConfig* config, Input input)
 	}
 }
 
+
+
 void Window::update(int deltaTime)
 {
 	if(mNormalizeNextUpdate)
@@ -192,6 +196,65 @@ void Window::update(int deltaTime)
 
 		mFrameTimeElapsed = 0;
 		mFrameCountElapsed = 0;
+	}
+	
+	mCapacityTimeElapsed += deltaTime;
+	if (mCapacityTimeElapsed > 2000)
+	{	
+		char capbuf[64];
+		int ncap = mCapacity;
+		int ncharge = mCharge;
+		
+		int fd = ::open("/sys/class/power_supply/battery/capacity", O_RDONLY);
+		if (fd > 0)
+		{
+		  int readn = read(fd, capbuf, 63);
+		  close(fd);
+		  
+		  if (readn > 0)
+		  {
+		    capbuf[readn] = 0;
+		    ncap = atoi(capbuf);
+		  }
+		}
+		
+		fd = ::open("/sys/class/power_supply/battery/status", O_RDONLY);
+		if (fd > 0)
+		{
+		  int readn = read(fd, capbuf, 63);
+		  close(fd);
+		  
+		  if (readn > 0)
+		  {
+		    capbuf[readn] = 0;
+			
+			if (strstr(capbuf, "Discharging"))
+			  ncharge = 0;
+		    else if (strstr(capbuf, "Charging"))
+			  ncharge = 1;
+		    else if (strstr(capbuf, "Full"))
+			  ncharge = 2;
+		  }
+		}
+		
+		if (ncap != mCapacity || ncharge != mCharge)
+		{
+		   std::stringstream ss;
+		   if (ncharge == 0)
+		     ss << "-";
+		   else if (ncharge == 1)
+		     ss << "+";
+		   else if (ncharge == 2)
+		     ss << "=";
+			 
+		   ss << ncap << "%";
+		   mCapacityText = std::unique_ptr<TextCache>(mDefaultFonts.at(1)->buildTextCache(ss.str(), Vector2f(Renderer::getScreenWidth() - 50, 0), 0x000000FF, 50, ALIGN_RIGHT));
+		   
+		   mCapacity = ncap;
+		   mCharge = ncharge;
+		}
+		
+		mCapacityTimeElapsed = 0;
 	}
 
 	mTimeSinceLastInput += deltaTime;
@@ -231,6 +294,12 @@ void Window::render()
 	{
 		Renderer::setMatrix(Transform4x4f::Identity());
 		mDefaultFonts.at(1)->renderTextCache(mFrameDataText.get());
+	}
+	
+	if(mCapacityText)
+	{
+		Renderer::setMatrix(Transform4x4f::Identity());
+		mDefaultFonts.at(1)->renderTextCache(mCapacityText.get());
 	}
 
 	unsigned int screensaverTime = (unsigned int)Settings::getInstance()->getInt("ScreenSaverTime");
