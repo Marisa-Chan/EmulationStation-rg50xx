@@ -447,7 +447,7 @@ void SystemData::deleteSystems()
 
 std::string SystemData::getConfigPath(bool forWrite)
 {
-	std::string path = Utils::FileSystem::getHomePath() + "/.emulationstation/es_systems.cfg";
+	std::string path = Utils::FileSystem::getHomePath() + "/configs/emulationstation/es_systems.cfg";
 	if(forWrite || Utils::FileSystem::exists(path))
 		return path;
 
@@ -497,7 +497,7 @@ std::string SystemData::getGamelistPath(bool forWrite) const
 	if(Utils::FileSystem::exists(filePath))
 		return filePath;
 
-	filePath = Utils::FileSystem::getHomePath() + "/.emulationstation/gamelists/" + mName + "/gamelist.xml";
+	filePath = Utils::FileSystem::getHomePath() + "/configs/emulationstation/gamelists/" + mName + "/gamelist.xml";
 	if(forWrite) // make sure the directory exists if we're going to write to it, or crashes will happen
 		Utils::FileSystem::createDirectory(Utils::FileSystem::getParent(filePath));
 	if(forWrite || Utils::FileSystem::exists(filePath))

@@ -584,7 +584,7 @@ const std::shared_ptr<ThemeData>& ThemeData::getDefault()
 	{
 		theme = std::shared_ptr<ThemeData>(new ThemeData());
 
-		const std::string path = Utils::FileSystem::getHomePath() + "/.emulationstation/es_theme_default.xml";
+		const std::string path = Utils::FileSystem::getHomePath() + "/configs/emulationstation/es_theme_default.xml";
 		if(Utils::FileSystem::exists(path))
 		{
 			try
@@ -639,7 +639,7 @@ std::map<std::string, ThemeSet> ThemeData::getThemeSets()
 	std::string paths[pathCount] =
 	{
 		"/etc/emulationstation/themes",
-		Utils::FileSystem::getHomePath() + "/.emulationstation/themes"
+		Utils::FileSystem::getHomePath() + "/configs/emulationstation/themes"
 	};
 
 	for(size_t i = 0; i < pathCount; i++)

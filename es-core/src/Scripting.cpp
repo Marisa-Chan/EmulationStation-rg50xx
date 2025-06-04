@@ -22,7 +22,7 @@ namespace Scripting
             scriptDirList.push_back(test);
 
         // check in homepath
-        test = Utils::FileSystem::getHomePath() + "/.emulationstation/scripts/" + eventName;
+        test = Utils::FileSystem::getHomePath() + "/configs/emulationstation/scripts/" + eventName;
         if(Utils::FileSystem::exists(test))
             scriptDirList.push_back(test);
         int ret = 0;
