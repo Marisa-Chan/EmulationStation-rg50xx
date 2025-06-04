@@ -16,6 +16,7 @@
 #include "Scripting.h"
 #include "SystemData.h"
 #include "VolumeControl.h"
+#include "BrightnessControl.h"
 #include <SDL_events.h>
 #include <algorithm>
 #include "platform.h"
@@ -26,6 +27,18 @@
 GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MENU"), mVersion(window)
 {
 	bool isFullUI = UIModeController::getInstance()->isUIModeFull();
+
+	auto brightness = std::make_shared<SliderComponent>(mWindow, 0.f, 100.f, 1.f, "%");
+	brightness->setChangeHandler([](int val) {BrightnessControl::getInstance()->setBrightness( val );} );
+	brightness->setValue(Settings::getInstance()->getInt("Brightness"));
+	mMenu.addWithLabel("Brightness", brightness);
+	addSaveFunc([brightness] { Settings::getInstance()->setInt("Brightness", brightness->getValue()); });
+
+	auto volume = std::make_shared<SliderComponent>(mWindow, 0.f, 100.f, 1.f, "%");
+	volume->setChangeHandler([](int val) {VolumeControl::getInstance()->setVolume( val );} );
+	volume->setValue(Settings::getInstance()->getInt("AudioVolume"));
+	mMenu.addWithLabel("Sound volume", volume);
+	addSaveFunc([volume] { Settings::getInstance()->setInt("AudioVolume", volume->getValue()); });
 
 	if (isFullUI) {
 		addEntry("SCRAPER", 0x777777FF, true, [this] { openScraperSettings(); });
@@ -88,14 +101,14 @@ void GuiMenu::openSoundSettings()
 	auto s = new GuiSettings(mWindow, "SOUND SETTINGS");
 
 	// volume
-	auto volume = std::make_shared<SliderComponent>(mWindow, 0.f, 100.f, 1.f, "%");
+	/*auto volume = std::make_shared<SliderComponent>(mWindow, 0.f, 100.f, 1.f, "%");
 	volume->setValue((float)VolumeControl::getInstance()->getVolume());
 	s->addWithLabel("SYSTEM VOLUME", volume);
-	s->addSaveFunc([volume] { VolumeControl::getInstance()->setVolume((int)Math::round(volume->getValue())); });
+	s->addSaveFunc([volume] { VolumeControl::getInstance()->setVolume((int)Math::round(volume->getValue())); });*/
 
 	if (UIModeController::getInstance()->isUIModeFull())
 	{
-#if defined(__linux__)
+#if FALSE //defined(__linux__)
 		// audio card
 		auto audio_card = std::make_shared< OptionListComponent<std::string> >(mWindow, "AUDIO CARD", false);
 		std::vector<std::string> audio_cards;
@@ -671,4 +684,20 @@ std::vector<HelpPrompt> GuiMenu::getHelpPrompts()
 	prompts.push_back(HelpPrompt("a", "select"));
 	prompts.push_back(HelpPrompt("start", "close"));
 	return prompts;
+}
+
+void GuiMenu::save()
+{
+	if(!mSaveFuncs.size())
+		return;
+
+	for(auto it = mSaveFuncs.cbegin(); it != mSaveFuncs.cend(); it++)
+		(*it)();
+
+	Settings::getInstance()->saveFile();
+}
+
+GuiMenu::~GuiMenu()
+{
+	save();
 }

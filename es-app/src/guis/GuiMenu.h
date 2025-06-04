@@ -11,6 +11,7 @@ class GuiMenu : public GuiComponent
 {
 public:
 	GuiMenu(Window* window);
+	virtual ~GuiMenu();
 
 	bool input(InputConfig* config, Input input) override;
 	void onSizeChanged() override;
@@ -29,11 +30,16 @@ private:
 	void openSoundSettings();
 	void openUISettings();
 
+	inline void addSaveFunc(const std::function<void()>& func) { mSaveFuncs.push_back(func); };
+	void save();
+
 	MenuComponent mMenu;
 	TextComponent mVersion;
 
 	typedef OptionListComponent<const FileData::SortType*> SortList;
 	std::shared_ptr<SortList> mListSort;
+
+	std::vector< std::function<void()> > mSaveFuncs;
 };
 
 #endif // ES_APP_GUIS_GUI_MENU_H

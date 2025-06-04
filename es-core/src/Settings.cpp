@@ -187,6 +187,9 @@ void Settings::setDefaults()
 	//No spaces!  Order is important!
 	//"The A Squad" given [a,an,the] will sort as "A Squad", but given [the,a,an] will sort as "Squad"
 	mStringMap["LeadingArticles"] = "a,an,the";
+	
+	mIntMap["AudioVolume"] = 50;
+	mIntMap["Brightness"] = 70;
 }
 
 template <typename K, typename V>

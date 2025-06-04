@@ -28,6 +28,9 @@
 
 #include <FreeImage.h>
 
+#include "VolumeControl.h"
+#include "BrightnessControl.h"
+
 bool scrape_cmdline = false;
 
 bool parseArgs(int argc, char* argv[])
@@ -355,6 +358,9 @@ int main(int argc, char* argv[])
 	window.pushGui(ViewController::get());
 
 	bool splashScreen = Settings::getInstance()->getBool("SplashScreen");
+
+	BrightnessControl::getInstance()->setBrightness( Settings::getInstance()->getInt("Brightness") );
+	VolumeControl::getInstance()->setVolume( Settings::getInstance()->getInt("AudioVolume") );
 
 	if(!scrape_cmdline)
 	{
