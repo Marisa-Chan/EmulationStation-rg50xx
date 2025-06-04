@@ -79,13 +79,19 @@ void SliderComponent::render(const Transform4x4f& parentTrans)
 	GuiComponent::renderChildren(trans);
 }
 
-void SliderComponent::setValue(float value)
+void SliderComponent::setValue(float value, bool callhandler)
 {
-	mValue = value;
-	if(mValue < mMin)
-		mValue = mMin;
-	else if(mValue > mMax)
-		mValue = mMax;
+	if(value < mMin)
+		value = mMin;
+	else if(value > mMax)
+		value = mMax;
+	
+	if (mValue != value)
+	{
+		mValue = value;
+		if (callhandler && mChangeHandler != nullptr)
+			mChangeHandler(mValue);
+	}			
 
 	onValueChanged();
 }
