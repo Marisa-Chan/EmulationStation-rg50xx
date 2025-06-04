@@ -9,6 +9,7 @@ set(ES_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ScraperCmdLine.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SystemData.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/VolumeControl.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/BrightnessControl.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Gamelist.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/FileFilterIndex.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SystemScreenSaver.h
@@ -69,6 +70,7 @@ set(ES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ScraperCmdLine.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SystemData.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/VolumeControl.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/BrightnessControl.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Gamelist.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/FileFilterIndex.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SystemScreenSaver.cpp
