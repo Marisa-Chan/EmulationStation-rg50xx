@@ -2,42 +2,18 @@
 #ifndef ES_APP_VOLUME_CONTROL_H
 #define ES_APP_VOLUME_CONTROL_H
 
-#include <memory>
 
-#if defined (__APPLE__)
-    #error TODO: Not implemented for MacOS yet!!!
-#elif defined(__linux__)
-	#include <unistd.h>
-	#include <fcntl.h>
-	#include <alsa/asoundlib.h>
-#elif defined(WIN32) || defined(_WIN32)
-	#include <Windows.h>
-	#include <endpointvolume.h>
-	#include <mmeapi.h>
-#endif
+#include <unistd.h>
+#include <fcntl.h>
+#include <memory>
 
 /*!
 Singleton pattern. Call getInstance() to get an object.
 */
 class VolumeControl
 {
-#if defined (__APPLE__)
-    #error TODO: Not implemented for MacOS yet!!!
-#elif defined(__linux__)
-    static const char * mixerName;
-    static const char * mixerCard;
-    int mixerIndex;
-    snd_mixer_t* mixerHandle;
-    snd_mixer_elem_t* mixerElem;
-    snd_mixer_selem_id_t* mixerSelemId;
-#elif defined(WIN32) || defined(_WIN32)
-	HMIXER mixerHandle;
-	MIXERCONTROL mixerControl;
-	IAudioEndpointVolume * endpointVolume;
-#endif
-
-	int originalVolume;
-	int internalVolume;
+	int originalVolume = 0;
+	int internalVolume = 0;
 
 	static std::weak_ptr<VolumeControl> sInstance;
 
@@ -55,6 +31,10 @@ public:
 	void setVolume(int volume);
 
 	~VolumeControl();
+
+private:
+	static int readVolume();
+	static void writeVolume(int vol);
 };
 
 #endif // ES_APP_VOLUME_CONTROL_H
