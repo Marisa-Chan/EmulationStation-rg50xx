@@ -25,12 +25,9 @@ public:
 	static std::shared_ptr<VolumeControl> & getInstance();
 
 	void init();
-	void deinit();
 
 	int getVolume() const;
 	void setVolume(int volume);
-
-	~VolumeControl();
 
 private:
 	static int readVolume();

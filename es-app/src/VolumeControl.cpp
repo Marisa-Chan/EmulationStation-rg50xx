@@ -27,14 +27,6 @@ VolumeControl & VolumeControl::operator=(const VolumeControl & right)
 	return *this;
 }
 
-VolumeControl::~VolumeControl()
-{
-	//set original volume levels for system
-	//setVolume(originalVolume);
-
-	deinit();
-}
-
 std::shared_ptr<VolumeControl> & VolumeControl::getInstance()
 {
 	//check if an VolumeControl instance is already created, if not create one
@@ -52,12 +44,6 @@ void VolumeControl::init()
 	//try to open mixer device
 	originalVolume = readVolume();
 	internalVolume = originalVolume * 3.226;
-}
-
-void VolumeControl::deinit()
-{
-	//deinitialize audio mixer interface
-	writeVolume(0);
 }
 
 int VolumeControl::getVolume() const

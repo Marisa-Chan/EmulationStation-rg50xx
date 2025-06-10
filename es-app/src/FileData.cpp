@@ -281,7 +281,6 @@ void FileData::launchGame(Window* window)
 	LOG(LogInfo) << "Attempting to launch game...";
 
 	AudioManager::getInstance()->deinit();
-	VolumeControl::getInstance()->deinit();
 	InputManager::getInstance()->deinit();
 	window->deinit();
 
